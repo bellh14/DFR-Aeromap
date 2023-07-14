@@ -32,7 +32,6 @@ class AeroMapV1:
         #self.density_contour("density_contour_data_v1.csv")
         #self.density_contour("density_contour_data_v2.csv")
 
-
     @staticmethod
     def merge_csv_data(folder: str) -> pd.DataFrame:
         """ takes a file from a give folder to set as base,

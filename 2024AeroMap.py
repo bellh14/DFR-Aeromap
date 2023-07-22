@@ -22,10 +22,10 @@ class AeroMapV1:
         self.CHASSIS_ANGLE_MIN: Final = -1.8131
         self.CHASSIS_ANGLE_MAX: Final = 0.8076
         self.file_name = file_name
-        self.folder = "2024AeroMapV2\\"
+        self.folder = "2024V3\\"
         #self.merge_csv_data()
         self.aeromap_df = pd.DataFrame(pd.read_csv(self.file_name, delimiter=','))
-        self.contour_df = self.create_df_for_contour()
+        #self.contour_df = self.create_density_contour_df()
         # self.z_2d = self.create_2d_z()
         # self.x = self.contour_df.get('FRH')
         # self.y = self.contour_df.get('RRH')
@@ -155,23 +155,34 @@ class AeroMapV1:
         fig.show()
 
     def create_density_contour_df(self) -> pd.DataFrame:
-        base_file_name = "_2024SensitivityStudy2_Straightline_finalv1cleared_Report.csv"
-        density_contour_df = pd.DataFrame(pd.read_csv(self.folder + "batch_1_1" + base_file_name, delimiter=','))
+        base_file_name = "_2024DesignStint3Baseline_HighDF_Report.csv"
+        density_contour_df = pd.DataFrame(pd.read_csv(self.folder + "batch_1" + base_file_name, delimiter=','))
         batches = [1, 2, 3, 4, 5, 6, 7, 8]
-        for batch in batches:
-            for i in range(1, 9):
-                try:
-                    next_csv = pd.DataFrame(
-                        pd.read_csv(self.folder + "batch_" + str(batch) + "_" + str(i) + base_file_name, delimiter=','))
-                    for j in range(1, int(next_csv.loc[0, "Raw Downforce Mean"])):
-                        if batch == 2 and i == 3 and j == 1:  # since 2_3 was used to initialize
-                            continue
-                        density_contour_df = pd.concat([density_contour_df, next_csv])
+        # for batch in batches:
+        #     for i in range(1, 9):
+        #         try:
+        #             next_csv = pd.DataFrame(
+        #                 pd.read_csv(self.folder + "batch_" + str(batch) + base_file_name, delimiter=','))
+        #             for j in range(1, int(next_csv.loc[0, "Raw Downforce Mean"])):
+        #                 if batch == 2 and i == 3 and j == 1:  # since 2_3 was used to initialize
+        #                     continue
+        #                 density_contour_df = pd.concat([density_contour_df, next_csv])
+        #
+        #         except FileNotFoundError:
+        #             continue
 
-                except FileNotFoundError:
-                    continue
+        for batch in batches:
+            try:
+                next_csv = pd.DataFrame(
+                    pd.read_csv(self.folder + "batch_" + str(batch) + base_file_name, delimiter=','))
+                for i in range(1, int(next_csv.loc[0, "Raw Downforce Mean"])):
+                    if batch == 1 and i == 1:
+                        continue
+                    density_contour_df = pd.concat([density_contour_df, next_csv])
+            except FileNotFoundError:
+                continue
         print(density_contour_df)
-        density_contour_df.to_csv("density_contour_data_v2.csv", index=False)
+        density_contour_df.to_csv("density_contour_data_v3.csv", index=False)
         return density_contour_df
 
     @staticmethod
@@ -183,7 +194,7 @@ class AeroMapV1:
                                                y=contour_data.get("Rear Rideheight"),
                                                z=contour_data.get("Raw Downforce Mean"),
                                                histfunc='avg',
-                                               contours=dict(labelfont=dict(color='white'), start=70, end=120, size=5)))
+                                               contours=dict(labelfont=dict(color='white'), start=70, end=135, size=5)))
         fig2.update_traces(contours_coloring="fill", contours_showlabels=False, colorscale="balance",
                            colorbar=dict(title="Mean Downforce (lbs)", titlefont=dict(size=20), titleside='right'),
                            )
@@ -229,5 +240,5 @@ class AeroMapV1:
 
 
 if __name__ == "__main__":
-    aeromap = AeroMapV1("2024_aeromap_v2.csv")
+    aeromap = AeroMapV1("2024_aeromap_v3.csv")
     aeromap.density_contour("density_contour_data_v2.csv")

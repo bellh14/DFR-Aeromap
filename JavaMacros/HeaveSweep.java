@@ -1,4 +1,3 @@
-package macro;
 
 import star.base.report.Report;
 import star.common.*;
@@ -15,27 +14,31 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-public class HeaveSweep extends StarMacro{
+public class HeaveSweep extends StarMacro {
 
     int currentSim = 1;
-    //    ArrayList<Double> yawAngles = new ArrayList<>(
-//            Arrays.asList(0.0, 2.5, 5.0, 7.5, 10.0, 12.5, 15.0));
-    ArrayList<Double> heaves = new ArrayList<>( // heave sweep
-            Arrays.asList(-1.0, -0.5, 0.5, 1.0));
+    // ArrayList<Double> yawAngles = new ArrayList<>(
+    // Arrays.asList(0.0, 2.5, 5.0, 7.5, 10.0, 12.5, 15.0));
+    ArrayList<Double> angles = new ArrayList<>( // heave sweep
+            // Arrays.asList(-1.8131, -1.4387, -0.9146, -0.4653, 0.0, 0.583, 0.8076));
+            Arrays.asList(0.0588, -1.8131, 0.0, 0.583, -1.4387, -0.9146, -0.4653, 0.8076));
+
+    final double heave = 1.0;
 
     @Override
-    public void execute(){
+    public void execute() {
         Simulation sim = getActiveSimulation();
         String baseDir = sim.getSessionDir();
         String simName = sim.getPresentationName();
 
-        try {
-            for(Double heave : heaves){
+        for (Double angle : angles) {
+            try {
                 long startTotalTime = System.nanoTime(); // will measure the total time taken of the sim
-                updateSimParameters(sim, heave);
+                updateSimParameters(sim, angle);
 
-                if(!updateMesh(sim)){ // runs meshing pipeline, catches errors
+                if (!updateMesh(sim)) { // runs meshing pipeline, catches errors
                     System.out.println("Fatal Mesh Error\nSkipping to next iteration");
+                    currentSim += 1;
                     continue;
                 }
 
@@ -43,36 +46,38 @@ public class HeaveSweep extends StarMacro{
                 sim.getSimulationIterator().run();
                 long iterationEndTime = System.nanoTime();
                 long iterationElapsedTime = iterationEndTime - iterationStartTime;
-                System.out.println("Iteration Time Take: " + TimeUnit.MINUTES.convert((iterationElapsedTime), TimeUnit.NANOSECONDS));
-                saveScenes(sim, heave, baseDir, simName);
+                System.out.println("Iteration Time Take: "
+                        + TimeUnit.MINUTES.convert((iterationElapsedTime), TimeUnit.NANOSECONDS));
+                saveScenes(sim, angle, heave, baseDir, simName);
                 long endTotal = System.nanoTime();
                 long totalElapsed = endTotal - startTotalTime;
                 System.out.println("Total Time Taken: " + TimeUnit.MINUTES.convert(totalElapsed, TimeUnit.NANOSECONDS));
                 currentSim += 1;
-
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("It is broken but probably not my fault");
+                saveScenes(sim, angle, heave, baseDir, simName);
+                currentSim += 1;
             }
-
-        }catch (Exception e){
-            e.printStackTrace();
-            System.out.println("It is broken but probably not my fault");
         }
+
     }
 
-    public void updateSimParameters(Simulation sim, Double chassisHeave){
+    public void updateSimParameters(Simulation sim, Double chassisAngle) {
 
-        ScalarGlobalParameter chassisAngleParam = ((ScalarGlobalParameter)
-                sim.get(GlobalParameterManager.class).getObject("Chassis Angle"));
+        ScalarGlobalParameter chassisAngleParam = ((ScalarGlobalParameter) sim.get(GlobalParameterManager.class)
+                .getObject("Chassis Angle"));
         Units angleUnits = ((Units) sim.getUnitsManager().getObject("deg"));
-        chassisAngleParam.getQuantity().setValueAndUnits(0.0, angleUnits);
+        chassisAngleParam.getQuantity().setValueAndUnits(chassisAngle, angleUnits);
 
-        ScalarGlobalParameter chassisHeaveScalar = ((ScalarGlobalParameter)
-                sim.get(GlobalParameterManager.class).getObject("chassisHeaveScalar"));
+        ScalarGlobalParameter chassisHeaveScalar = ((ScalarGlobalParameter) sim.get(GlobalParameterManager.class)
+                .getObject("chassisHeaveScalar"));
         Units chassisHeaveUnits = ((Units) sim.getUnitsManager().getObject("in"));
-        chassisHeaveScalar.getQuantity().setValueAndUnits(chassisHeave, chassisHeaveUnits);
+        chassisHeaveScalar.getQuantity().setValueAndUnits(heave, chassisHeaveUnits);
     }
 
-    public boolean updateMesh(Simulation sim){
-        try{
+    public boolean updateMesh(Simulation sim) {
+        try {
             long meshStartTime = System.nanoTime();
             MeshPipelineController mesh = sim.get(MeshPipelineController.class);
             mesh.clearGeneratedMeshes();
@@ -81,47 +86,49 @@ public class HeaveSweep extends StarMacro{
 
             long meshEndTime = System.nanoTime();
             long meshElapsedTime = meshEndTime - meshStartTime;
-            System.out.println("Mesh pipeline time: " + TimeUnit.MINUTES.convert(meshElapsedTime, TimeUnit.NANOSECONDS));
-        }catch (Exception e){ // catches fatal mesh errors
+            System.out
+                    .println("Mesh pipeline time: " + TimeUnit.MINUTES.convert(meshElapsedTime, TimeUnit.NANOSECONDS));
+        } catch (Exception e) { // catches fatal mesh errors
             e.printStackTrace();
             return false;
         }
         return true;
     }
 
+    public void saveScenes(Simulation sim, double chassisAngle, double chassisHeave, String baseDir, String simName) {
 
-    public void saveScenes(Simulation sim, double yawAngle, String baseDir, String simName){
-
-        //String baseDir = sim.getSessionDir(); //get the name of the simulation's directory
-        String sep = System.getProperty("file.separator"); //get the right separator for your operative system
+        // String baseDir = sim.getSessionDir(); //get the name of the simulation's
+        // directory
+        String sep = System.getProperty("file.separator"); // get the right separator for your operative system
         String currentDir = baseDir + sep + currentSim + sep;
         BufferedWriter bwout;
 
-        try{
+        try {
             File currentSimDir = new File(currentDir);
-            if(!currentSimDir.exists()){
+            if (!currentSimDir.exists()) {
                 currentSimDir.mkdirs();
             }
             sim.saveState(currentDir + currentSim + "_" + simName + ".sim");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        try{
+        try {
 
-            bwout = new BufferedWriter(new FileWriter
-                    (resolvePath("batch_" + currentSim + "_" + simName + "_Report.csv")));
+            bwout = new BufferedWriter(
+                    new FileWriter(resolvePath("batch_" + currentSim + "_" + simName + "_Report.csv")));
             Collection<Report> reportCollection = sim.getReportManager().getObjects();
 
-            for (Report thisReport : reportCollection){
-                bwout.write(thisReport.getPresentationName() +",");
+            for (Report thisReport : reportCollection) {
+                bwout.write(thisReport.getPresentationName() + ",");
             }
 
-            bwout.write("Yaw Angle,");
+            bwout.write("Chassis Angle,");
+            bwout.write("Chassis Heave,");
 
             bwout.write("\n");
 
-            for (Report thisReport : reportCollection){
+            for (Report thisReport : reportCollection) {
 
                 String fieldLocationName = thisReport.getPresentationName();
                 Double fieldValue = thisReport.getReportMonitorValue();
@@ -137,28 +144,28 @@ public class HeaveSweep extends StarMacro{
                 bwout.write(fieldValue + ",");
 
             }
-            bwout.write(yawAngle + ",");
+            bwout.write(chassisAngle + ",");
+            bwout.write(chassisHeave + ",");
 
             bwout.close();
+
+            for (Scene scn : sim.getSceneManager().getScenes()) {
+                sim.println("Saving Scene: " + scn.getPresentationName());
+                scn.printAndWait(resolvePath(currentDir + scn.getPresentationName() + ".jpg"), 1, 1920, 1080);
+            }
+
+            for (StarPlot plt : sim.getPlotManager().getObjects()) {
+                sim.println("Saving Plot: " + plt.getPresentationName());
+                plt.encode(resolvePath(currentDir + plt.getPresentationName() + ".jpg"), "jpg", 1920, 1080);
+            }
 
         } catch (IOException iOException) {
             iOException.printStackTrace();
         }
 
-        for (Scene scn: sim.getSceneManager().getScenes()) {
-            sim.println("Saving Scene: " + scn.getPresentationName());
-            scn.printAndWait(resolvePath(currentDir + scn.getPresentationName() + ".jpg"), 1, 1920, 1080);
-        }
-
-
-        for (StarPlot plt : sim.getPlotManager().getObjects()) {
-            sim.println("Saving Plot: " + plt.getPresentationName());
-            plt.encode(resolvePath(currentDir + plt.getPresentationName() + ".jpg"), "jpg", 1920, 1080);
-        }
-
     }
 
-    public static void main(){ // can use for testing and validating input
+    public static void main() { // can use for testing and validating input
 
     }
 }

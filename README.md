@@ -1,5 +1,7 @@
 # Dallas Formula Racing Aeromap Scripts
 
+![Alt text](2024AeroMapV1/2024AeroMap.png)
+
 Python script to process and visualize aerodynamic performance of the vechicle through different simulations
 
 The main purpose is to create an 'aeromap' which allows us to analysze how the car performs through various rideheights and crosswinds.

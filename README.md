@@ -8,7 +8,7 @@ The main purpose is to create an 'aeromap' which allows us to analysze how the c
 The visualized aeromap is a 2d graph where x and y axes are front and rear ride heights respectively, and the z axis is the mean downforce value.
 
 ## More Info
-Please see the combined detailed design report for more information. HPC and aeromap details are specifically the last 17 pages.
+Please see the combined detailed design report for more information. HPC analysis and code details are specifically the last 17 pages though the aeromap spans the full 51.
 https://github.com/bellh14/DFR-Aeromap/blob/master/2024%20Aerodynamics%20DDR-combined.pdf 
 
 ## Java Macros

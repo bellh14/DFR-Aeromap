@@ -7,6 +7,10 @@ Python script to process and visualize aerodynamic performance of the vechicle t
 The main purpose is to create an 'aeromap' which allows us to analysze how the car performs through various rideheights and crosswinds.
 The visualized aeromap is a 2d graph where x and y axes are front and rear ride heights respectively, and the z axis is the mean downforce value.
 
+## More Info
+Please see the combined detailed design report for more information. HPC and aeromap details are specifically the last 17 pages.
+https://github.com/bellh14/DFR-Aeromap/blob/master/2024%20Aerodynamics%20DDR-combined.pdf 
+
 ## Java Macros
 
 Uses StarCCM+'s Java api to change input parameters in the CFD simulation. Different versions for sweeping through single variable, 2 variable, and Yaw Angle Cases.

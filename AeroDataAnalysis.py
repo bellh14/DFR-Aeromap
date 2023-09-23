@@ -39,7 +39,7 @@ class AeroDataAnalysis:
             if i == 0:
                 aeromap_df = pd.concat([aeromap_df, data])
 
-            for j in range(round(data.loc[0, "Raw Downforce Mean"])):
+            for j in range(round(data.loc[i, "Raw Downforce Mean"])):
                 aeromap_df = pd.concat([aeromap_df, data])
 
         if save_csv:

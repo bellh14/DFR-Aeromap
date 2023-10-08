@@ -17,23 +17,24 @@ class Visualizer:
                           y="Rear Axle Downforce", trendline='ols')
         fig2.show()
 
-    def plot_aeromap(self, save_plot: bool = False,
+    def plot_aeromap(self, target_column: str = "Raw Downforce Mean",
+                     save_plot: bool = False,
                      output_file_name: str = None) -> None:
 
         fig2 = go.Figure(go.Histogram2dContour(
             x=self.aero_df.get("Front Rideheight"),
             y=self.aero_df.get("Rear Rideheight"),
-            z=self.aero_df.get("Raw Downforce Mean"),
+            z=self.aero_df.get(target_column),
             histfunc='avg',
             contours=dict(
                 labelfont=dict(color='white'), start=70, end=135, size=5)))
 
         fig2.update_traces(contours_coloring="fill", contours_showlabels=False,
                            colorscale="balance",
-                           colorbar=dict(title="Mean Downforce (lbs)",
+                           colorbar=dict(title=f"{target_column}",
                                          titlefont=dict(size=20),
                                          titleside='right'),)
-        fig2.update_layout(title=dict(text="Ride Height vs Downforce",
+        fig2.update_layout(title=dict(text=f"Ride Height vs {target_column}",
                            font=dict(size=24), xref='paper', x=0.5),
                            # xaxis=dict(tick0=4.0, dtick=0.4),
                            # yaxis=dict(tick0=4.0, dtick=0.4),

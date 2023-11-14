@@ -21,9 +21,9 @@ public class HeaveSweep extends StarMacro {
     // Arrays.asList(0.0, 2.5, 5.0, 7.5, 10.0, 12.5, 15.0));
     ArrayList<Double> angles = new ArrayList<>( // heave sweep
             // Arrays.asList(-1.8131, -1.4387, -0.9146, -0.4653, 0.0, 0.583, 0.8076));
-            Arrays.asList(0.0588, -1.8131, 0.0, 0.583, -1.4387, -0.9146, -0.4653, 0.8076));
+            Arrays.asList(-1.3, -0.92857, -0.55714, -0.18571, 0.18571, 0.55714, 0.92857, 1.3));
 
-    final double heave = 1.0;
+    final double heave = -1.2;
 
     @Override
     public void execute() {

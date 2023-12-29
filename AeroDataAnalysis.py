@@ -72,19 +72,19 @@ class AeroDataAnalysis:
 
 if __name__ == "__main__":
     # file_name = "2024DesignStint4BaselineBullhornsBeamWingCleared_Report.csv"
-    file_name = "2024_aeromap.csv"
-    aeromap = AeroDataAnalysis(file_name, "2024AeroMapV1/")
+    file_name = "2023UTASpec_Rideheight_Final_Report_cleaned.csv"
+    aeromap = AeroDataAnalysis(file_name, "NewMap/")
     aeromap.load_data(file_name)
-    aeromap.save_selected_columns(["Front Rideheight", "Rear Rideheight",
-                                   "Raw Downforce Mean", "Raw Drag Mean"],
-                                  "2024_v1_drag_data.csv")
-    aeromap.load_data("2024_v1_drag_data.csv")
-    aeromap.normalize_columns(["Raw Downforce Mean", "Raw Drag Mean"],
-                              save_csv=True,
-                              output_file="2024_v1_drag_normalized.csv")
+    # aeromap.save_selected_columns(["Front Rideheight", "Rear Rideheight",
+    #                                "Raw Downforce Mean", "Raw Drag Mean"],
+    #                               "2023UTASpec_Rideheight_Final_Report_drag_data.csv")
+    # aeromap.load_data("2023UTASpec_Rideheight_Final_Report_drag_data.csv")
+    # aeromap.normalize_columns(["Raw Downforce Mean", "Raw Drag Mean"],
+    #                           save_csv=True,
+    #                           output_file="2023UTASpec_Rideheight_Final_Report_drag_normalized.csv")
 
     # aeromap.aero_data = aeromap.merge_csv_data("2024_aeromap_v4.csv")
-    # aeromap.create_aeromap_df("2023_aeromap_drag_contour.csv", "Raw Drag Mean",
-    #                           save_csv=True)
-    # visualizer = Visualizer(aeromap.aero_data)
-    # visualizer.plot_aeromap(target_column="Raw Drag Mean")
+    aeromap.create_aeromap_df("2023UTASpec_Rideheight_Final_Report_aeromap.csv",
+                              save_csv=True)
+    visualizer = Visualizer(aeromap.aero_data)
+    visualizer.plot_aeromap(output_file_name="2023UTASpec_Rideheight_Final_Report_cleaned.png")

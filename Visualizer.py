@@ -36,8 +36,6 @@ class Visualizer:
                                          titleside='right'),)
         fig2.update_layout(title=dict(text=f"Ride Height vs {target_column}",
                            font=dict(size=24), xref='paper', x=0.5),
-                           # xaxis=dict(tick0=4.0, dtick=0.4),
-                           # yaxis=dict(tick0=4.0, dtick=0.4),
                            # height=720, width=1024
                            )
 

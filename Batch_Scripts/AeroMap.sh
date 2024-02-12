@@ -1,17 +1,19 @@
-!/bin/bash
+#!/bin/bash
+#SBATCH     --partition=normal
+#SBATCH     --nodes=8
+#SBATCH     --ntasks=128
+#SBATCH     --job-name="AEROMAP"
+#SBATCH     --time=96:00:00
+#SBATCH     --mail-type=ALL
+#SBATCH     --mail-user=hxb210012@utdallas.edu
+#SBATCH     --output="output.txt"
 
-#SBATCH --partition=256i
-#SBATCH --nodes=4
-#SBATCH --ntasks=80
-#SBATCH --time=96:00:00
-#SBATCH --mail-type=ALL
-#SBATCH --output=/home/hxb210012/scratch/NewMapTest/batch_1.out
-
-NCPU=80
+WORKING_DIR="/scratch/ganymede/hxb210012/25AeroMapv1"
+NCPU=128
 PODKEY=""
-
-echo -e "This job allocated $NCPU cores\nJob is allocated on node(s): $SLURM_JOB_NODELIST" > /home/hxb210012/scratch/NewMapTest/batch_1_log.out
+JAVA_MACRO="AeroMap.java"
+SIM_FILE="25AeroMapv1.sim"
 
 module load starccm/17.04.007
 
-starccm+ -power -licpath 1999@flex.cd-adapco.com -podkey $PODKEY -batch "/petastore/ganymede/home/hxb210012/scratch/NewMapTest/batch_1/HeaveSweep.java"
+starccm+ -power -licpath 1999@flex.cd-adapco.com -podkey $PODKEY -batch $WORKING_DIR/$JAVA_MACRO -np $NCPU $WORKING_DIR/$SIM_FILE -bs slurm -time -batch-report

@@ -32,6 +32,14 @@ class AeroDataAnalysis:
         merged_data.to_csv(f"{self.folder}{output_file}", index=False)
         return merged_data
 
+    def convert_rh_to_inches(self, columns: list[str]) -> None:
+        for i, data in self.aero_data.iterrows():
+            for column in columns:
+                self.aero_data.at[i, column] = data[column] * 39.3701
+        self.aero_data.to_csv(f"{self.folder}{self.base_file_name}_inches.csv", index=False)
+        
+
+
     def create_aeromap_df(self, output_file: str,
                           target_column: str = "Raw Downforce Mean",
                           save_csv: bool = False) -> pd.DataFrame:
@@ -72,9 +80,10 @@ class AeroDataAnalysis:
 
 if __name__ == "__main__":
     # file_name = "2024DesignStint4BaselineBullhornsBeamWingCleared_Report.csv"
-    file_name = "2023UTASpec_Rideheight_Final_Report_cleaned.csv"
+    file_name = "2023UTASpec_Rideheight_Final_Report_aeromap.csv"
     aeromap = AeroDataAnalysis(file_name, "NewMap/")
     aeromap.load_data(file_name)
+    # aeromap.convert_rh_to_inches(["Front Rideheight", "Rear Rideheight"])
     # aeromap.save_selected_columns(["Front Rideheight", "Rear Rideheight",
     #                                "Raw Downforce Mean", "Raw Drag Mean"],
     #                               "2023UTASpec_Rideheight_Final_Report_drag_data.csv")
@@ -84,7 +93,9 @@ if __name__ == "__main__":
     #                           output_file="2023UTASpec_Rideheight_Final_Report_drag_normalized.csv")
 
     # aeromap.aero_data = aeromap.merge_csv_data("2024_aeromap_v4.csv")
-    aeromap.create_aeromap_df("2023UTASpec_Rideheight_Final_Report_aeromap.csv",
-                              save_csv=True)
+    # aeromap.create_aeromap_df("25AeroMapv1_Report_aeromap.csv",
+    #                           save_csv=True)
     visualizer = Visualizer(aeromap.aero_data)
-    visualizer.plot_aeromap(output_file_name="2023UTASpec_Rideheight_Final_Report_cleaned.png")
+    visualizer.plot_aeromap(output_file_name="25AeroMapv1_Report", save_plot=False)
+    # visualizer.plot_faxle_vs_raxle()
+    # visualizer.scatter_plot()

@@ -9,8 +9,8 @@ class Visualizer:
         self.aero_df = data
 
     def scatter_plot(self) -> None:
-        fig = px.scatter(self.aero_df, x="Rideheight",
-                         y="Raw Downforce Mean", trendline='ols')
+        fig = px.scatter(self.aero_df, x="CdA Mean",
+                         y="ClA Mean", trendline='lowess', trendline_color_override='red', trendline_options=dict(frac=0.5))
         fig.show()
         # fig.write_html("front_axle_vs_rear_axle.html")
         # fig2 = px.scatter(self.aero_df, x="Front Rideheight",
@@ -21,8 +21,17 @@ class Visualizer:
         fig = px.scatter(
             self.aero_df,
             x="Front Rideheight",
-            y=["Front Axle Downforce Mean", "Rear Axle Downforce Mean"],
+            # y=["Front Axle Downforce Mean", "Rear Axle Downforce Mean"],
+            y="FA-RA Difference",
+            size="Raw Downforce Mean",
             color_discrete_sequence=px.colors.qualitative.Vivid,
+        )
+        fig.update_layout(
+            title="Front Axle vs Rear Axle Downforce",
+            xaxis_title="Ride Height",
+            yaxis_title="Downforce",
+            height=1080,
+            width=1920,
         )
 
         # fig.update_layout(
@@ -44,7 +53,7 @@ class Visualizer:
             z=self.aero_df.get(target_column),
             histfunc='avg',
             contours=dict(
-                labelfont=dict(color='white'), start=90, end=195, size=5)))
+                labelfont=dict(color='white'), start=140, end=195, size=5)))
 
         fig2.update_traces(contours_coloring="fill", contours_showlabels=False,
                            colorscale="balance",
@@ -56,8 +65,8 @@ class Visualizer:
                            # height=720, width=1024
                            )
 
-        fig2.update_xaxes(title_text="Front Ride Height (m)", )
-        fig2.update_yaxes(title_text="Rear Ride Height (m)")
+        fig2.update_xaxes(title_text="Front Ride Height (in)", range=[4.5, 6.5])
+        fig2.update_yaxes(title_text="Rear Ride Height (in)", range=[4.5, 8.0])
         fig2.show()
 
         if save_plot:

@@ -90,15 +90,17 @@ class AeroDataAnalysis:
 
 if __name__ == "__main__":
     # file_name = "2024DesignStint4BaselineBullhornsBeamWingCleared_Report.csv"
-    file_name = "25AeroMapv1_Report_Cleaned.csv"
-    aeromap = AeroDataAnalysis(file_name, "25v1/")
+    file_name = "24V5_Cleaned.csv"
+    aeromap = AeroDataAnalysis(file_name, "24Final/")
     aeromap.load_data(file_name)
+    # aeromap.convert_rh()
+    # aeromap.convert_rh_to_inches(["Front Rideheight", "Rear Rideheight"])
     # aeromap.calc_faxle_raxle_difference()
-    # aeromap.save_selected_columns("25AeroMapv1_Report_Cleaned.csv", aeromap.aero_data.columns)
+    # aeromap.save_selected_columns("24V5_Cleaned.csv", aeromap.aero_data.columns)
     aeromap.create_aeromap_df("25AeroMapv1_Report_aeromap.csv",
                               save_csv=False)
     visualizer = Visualizer(aeromap.aero_data)
-    visualizer.plot_aeromap(
-        output_file_name="25AeroMapv1_Report", save_plot=False)
+    # visualizer.plot_aeromap(
+    #     output_file_name="25AeroMapv1_Report", save_plot=False)
     # visualizer.plot_faxle_vs_raxle()
-    # visualizer.scatter_plot()
+    visualizer.scatter_plot()

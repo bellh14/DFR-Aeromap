@@ -11,11 +11,23 @@ class Visualizer:
     def scatter_plot(self) -> None:
         fig = px.scatter(self.aero_df, x="CdA Mean",
                          y="ClA Mean", trendline='lowess', trendline_color_override='red', trendline_options=dict(frac=0.5))
-        fig.show()
+        # fig.show()
         # fig.write_html("front_axle_vs_rear_axle.html")
         # fig2 = px.scatter(self.aero_df, x="Front Rideheight",
         #                   y="Rear Axle Downforce Mean", trendline='ols')
         # fig2.show()
+        self.aero_df["Chassis Angle"] = self.aero_df["Chassis Angle"].astype(
+            str)
+        fig2 = px.scatter(self.aero_df, x="Rideheight", y="Raw Downforce Mean", color="Chassis Angle",
+                          size="Raw Downforce Mean", color_discrete_sequence=px.colors.qualitative.D3)
+        fig2.update_layout(
+            title="Ride Height vs Downforce",
+            xaxis_title="Ride Height (in)",
+            yaxis_title="Downforce (lbf)",
+            height=1080,
+            width=1920,
+        )
+        fig2.show()
 
     def plot_faxle_vs_raxle(self):
         fig = px.scatter(
@@ -28,8 +40,8 @@ class Visualizer:
         )
         fig.update_layout(
             title="Front Axle vs Rear Axle Downforce",
-            xaxis_title="Ride Height",
-            yaxis_title="Downforce",
+            xaxis_title="Ride Height (in)",
+            yaxis_title="Downforce (lbf)",
             height=1080,
             width=1920,
         )
@@ -53,7 +65,7 @@ class Visualizer:
             z=self.aero_df.get(target_column),
             histfunc='avg',
             contours=dict(
-                labelfont=dict(color='white'), start=140, end=195, size=5)))
+                labelfont=dict(color='white'), start=110, end=150, size=5)))
 
         fig2.update_traces(contours_coloring="fill", contours_showlabels=False,
                            colorscale="balance",
@@ -65,7 +77,8 @@ class Visualizer:
                            # height=720, width=1024
                            )
 
-        fig2.update_xaxes(title_text="Front Ride Height (in)", range=[4.5, 6.5])
+        fig2.update_xaxes(
+            title_text="Front Ride Height (in)", range=[4.5, 6.5])
         fig2.update_yaxes(title_text="Rear Ride Height (in)", range=[4.5, 8.0])
         fig2.show()
 

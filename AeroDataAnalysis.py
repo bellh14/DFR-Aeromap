@@ -84,23 +84,26 @@ class AeroDataAnalysis:
         print(f"Min: {self.aero_data[column].min()}")
         print(f"Max: {self.aero_data[column].max()}")
         print(f"Mean: {self.aero_data[column].mean()}")
-    
+
     def calc_faxle_raxle_difference(self) -> None:
-        self.aero_data["FA-RA Difference"] = self.aero_data["Front Axle Downforce Mean"] - self.aero_data["Rear Axle Downforce Mean"]
+        self.aero_data["FA-RA Difference"] = self.aero_data["Front Axle Downforce Mean"] - \
+            self.aero_data["Rear Axle Downforce Mean"]
+
 
 if __name__ == "__main__":
     # file_name = "2024DesignStint4BaselineBullhornsBeamWingCleared_Report.csv"
-    file_name = "24V5_Cleaned.csv"
-    aeromap = AeroDataAnalysis(file_name, "24Final/")
+    file_name = "24_Aeromap_Final.csv"
+    aeromap = AeroDataAnalysis(file_name, "2024V4/")
     aeromap.load_data(file_name)
     # aeromap.convert_rh()
     # aeromap.convert_rh_to_inches(["Front Rideheight", "Rear Rideheight"])
     # aeromap.calc_faxle_raxle_difference()
-    # aeromap.save_selected_columns("24V5_Cleaned.csv", aeromap.aero_data.columns)
-    aeromap.create_aeromap_df("25AeroMapv1_Report_aeromap.csv",
-                              save_csv=False)
+    # aeromap.save_selected_columns(
+    #     "24_Aeromap_Final.csv", aeromap.aero_data.columns)
+    aeromap.create_aeromap_df("24_Aeromap_Final_Cleaned.csv",
+                              save_csv=True)
     visualizer = Visualizer(aeromap.aero_data)
-    # visualizer.plot_aeromap(
-    #     output_file_name="25AeroMapv1_Report", save_plot=False)
+    visualizer.plot_aeromap(
+        output_file_name="24AeroMapFinal_Report", save_plot=True)
     # visualizer.plot_faxle_vs_raxle()
-    visualizer.scatter_plot()
+    # visualizer.scatter_plot()

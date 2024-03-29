@@ -1,11 +1,13 @@
 # Dallas Formula Racing Aeromap Scripts
 
-![Alt text](2024AeroMapV1/2024AeroMap.png)
+![Alt text](2024V4/24AeroMapFinal_Report.png)
 
 Python script to process and visualize aerodynamic performance of the vechicle through different simulations
 
 The main purpose is to create an 'aeromap' which allows us to analysze how the car performs through various rideheights and crosswinds.
 The visualized aeromap is a 2d graph where x and y axes are front and rear ride heights respectively, and the z axis is the mean downforce value.
+
+![25 Diffuser V1](25v1/25DiffuserV1.png)
 
 ## More Info
 

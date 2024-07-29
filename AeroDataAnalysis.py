@@ -32,6 +32,21 @@ class AeroDataAnalysis:
         merged_data.to_csv(f"{self.folder}{output_file}", index=False)
         return merged_data
 
+    def merge_airfoil_data(self, folders: [str], outputfile: str) -> pd.DataFrame:
+        merged_data = pd.DataFrame(pd.read_csv(
+            f"{self.folder}1/batch_1_{self.base_file_name}", delimiter=','))
+        for folder in folders:
+            for i in range(2, 181):
+                try:
+                    next_csv = pd.DataFrame(pd.read_csv(
+                        f"{self.folder}{folder}batch_{i}_{self.base_file_name}"))
+                    merged_data = pd.concat([merged_data, next_csv])
+                except FileNotFoundError:
+                    continue
+        merged_data.to_csv(f"{self.folder}{outputfile}", index=False)
+        return merged_data
+            
+
     def convert_rh_to_inches(self, columns: list[str]) -> None:
         for i, data in self.aero_data.iterrows():
             for column in columns:
@@ -83,7 +98,10 @@ class AeroDataAnalysis:
         print(f"{column}")
         print(f"Min: {self.aero_data[column].min()}")
         print(f"Max: {self.aero_data[column].max()}")
-        print(f"Mean: {self.aero_data[column].mean()}")
+        print(f"Mean: {self.aero_data[column].mean()}\n")
+    
+    def print_corr(self) -> None:
+        print(self.aero_data.corr()["Raw Downforce Mean"].sort_values(ascending=False))
 
     def calc_faxle_raxle_difference(self) -> None:
         self.aero_data["FA-RA Difference"] = self.aero_data["Front Axle Downforce Mean"] - \
@@ -92,18 +110,25 @@ class AeroDataAnalysis:
 
 if __name__ == "__main__":
     # file_name = "2024DesignStint4BaselineBullhornsBeamWingCleared_Report.csv"
-    file_name = "24_Aeromap_Final.csv"
-    aeromap = AeroDataAnalysis(file_name, "2024V4/")
+    file_name = "2024DesignFreezeReport.csv"
+    aeromap = AeroDataAnalysis(file_name, "24Final/")
+    # aeromap.merge_airfoil_data(["1/", "2/", "3/", "4/"], "S1223Data.csv")
     aeromap.load_data(file_name)
     # aeromap.convert_rh()
     # aeromap.convert_rh_to_inches(["Front Rideheight", "Rear Rideheight"])
-    # aeromap.calc_faxle_raxle_difference()
+    aeromap.calc_faxle_raxle_difference()
+    aeromap.calc_min_max_mean("Raw Downforce Mean")
+    aeromap.calc_min_max_mean("Raw Drag Mean")
+    aeromap.calc_min_max_mean("Front Axle Downforce Mean")
+    aeromap.calc_min_max_mean("Rear Axle Downforce Mean")
+    aeromap.print_corr()
+    
     # aeromap.save_selected_columns(
     #     "24_Aeromap_Final.csv", aeromap.aero_data.columns)
-    aeromap.create_aeromap_df("24_Aeromap_Final_Cleaned.csv",
-                              save_csv=True)
-    visualizer = Visualizer(aeromap.aero_data)
-    visualizer.plot_aeromap(
-        output_file_name="24AeroMapFinal_Report", save_plot=True)
+    # aeromap.create_aeromap_df("24_Aeromap_Final_Cleaned.csv",
+    #                           save_csv=False)
+    # visualizer = Visualizer(aeromap.aero_data)
+    # visualizer.plot_aeromap(
+    #     output_file_name="24AeroMapFinal_Report", save_plot=False)
     # visualizer.plot_faxle_vs_raxle()
     # visualizer.scatter_plot()

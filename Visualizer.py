@@ -9,20 +9,72 @@ class Visualizer:
         self.aero_df = data
 
     def scatter_plot(self) -> None:
-        self.aero_df["Chassis Angle"] = self.aero_df["Chassis Angle"].astype(
-            str)
-        # fig = px.scatter(self.aero_df, x="CdA Mean",
-        #                  y="ClA Mean", trendline='lowess', trendline_color_override='red', trendline_options=dict(frac=0.5))
+        # self.aero_df["Chassis Angle"] = self.aero_df["Chassis Angle"].astype(
+        #     str)
+        # self.aero_df["Cd"] = self.aero_df["Cd"].astype(str)
+        # fig = px.scatter(self.aero_df, x="AOA", y="Cl", color="Cd", color_continuous_scale="balance")
+
+        # fig.update_layout(
+        #     title=dict(text="S1223 Airfoil",
+        #                font=dict(size=40), xref='paper', x=0.5),
+        #     height=1080, width=1920, showlegend=True,
+        #     legend=dict(font=dict(size=20)),
+        # )
+        # fig.update_xaxes(
+        #     title_text="AOA (deg)", title_font=dict(size=32), tickfont=dict(size=20))
+        # fig.update_yaxes(title_text="Cl",
+        #                  title_font=dict(size=32), tickfont=dict(size=20))
         # fig.show()
         # fig.write_html("front_axle_vs_rear_axle.html")
+        fig = px.scatter(self.aero_df, x="Chassis Angle", y="FA-RA Difference")
+        fig.update_traces(marker_size=20)
+        fig.update_layout(
+            title=dict(text="FA - RA Difference",
+                       font=dict(size=40), xref='paper', x=0.5),
+            height=1080, width=1920, showlegend=True,
+            legend=dict(font=dict(size=20)),
+        )
+        fig.update_xaxes(
+            title_text="Chassis Angle (deg)", title_font=dict(size=32), tickfont=dict(size=20))
+        fig.update_yaxes(title_text="Downforce (lbs)",
+                         title_font=dict(size=32), tickfont=dict(size=20))
+        fig.show()
         # fig2 = px.scatter(self.aero_df, x="Front Rideheight",
         #                   y="Rear Axle Downforce Mean", trendline='ols')
         # fig2.show()
-        fig = px.scatter(self.aero_df, x="Rideheight", y="Raw Downforce Mean",
-                         color="Chassis Angle", size="Raw Downforce Mean", color_discrete_sequence=px.colors.qualitative.Bold,
-                         hover_data=["Chassis Angle", "Chassis Heave", "FA-RA Difference", "Raw Downforce Mean"])
-        fig.show()
-        fig.write_html("25v1_03-10.html")
+        fig3 = px.scatter(self.aero_df, x="Chassis Angle",
+                          y="Raw Downforce Mean")
+        fig3.update_traces(marker_size=20)
+
+        fig3.update_layout(
+            title=dict(text="Chassis Angle vs Downforce",
+                       font=dict(size=40), xref='paper', x=0.5),
+            height=1080, width=1920, showlegend=True,
+            legend=dict(font=dict(size=20)),
+        )
+        fig3.update_xaxes(
+            title_text="Chassis Angle (deg)", title_font=dict(size=32), tickfont=dict(size=20))
+        fig3.update_yaxes(title_text="Downforce (lbs)",
+                          title_font=dict(size=32), tickfont=dict(size=20))
+        fig3.show()
+        # fig = px.scatter(self.aero_df, x="Rideheight", y="Raw Downforce Mean",
+        #                  color="Chassis Angle", size="Raw Downforce Mean",
+        #                  color_discrete_sequence=["red", "blue", "green", "yellow", "orange",
+        #                                           "purple", "magenta", "goldenrod", "black", "cyan", "brown"],
+        #                  hover_data=["Chassis Angle", "Chassis Heave", "FA-RA Difference", "Raw Downforce Mean"])
+        # fig.update_layout(
+        #     title=dict(text="2025 V1 Downforce vs Rideheight",
+        #                font=dict(size=40), xref='paper', x=0.5),
+        #     height=1080, width=1920, showlegend=True,
+        #     legend=dict(font=dict(size=20)),
+        # )
+
+        # fig.update_xaxes(
+        #     title_text="Ride Height (in)", title_font=dict(size=32), tickfont=dict(size=20))
+        # fig.update_yaxes(title_text="Downforce (lbs)",
+        #                  title_font=dict(size=32), tickfont=dict(size=20))
+        # fig.show()
+        # fig.write_html("25v1_03-10.html")
 
     def plot_faxle_vs_raxle(self):
         fig = px.scatter(
